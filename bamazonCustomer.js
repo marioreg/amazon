@@ -1,17 +1,17 @@
 var mysql = require("mysql");
-var Table = require("easy-table");
 var inquirer = require("inquirer");
+const {table} = require('table');
+var inStock;
+var quantity;
+var item;
 
 
 var connection = mysql.createConnection({
   host: "localhost",
-
   // Your port; if not 3306
   port: 3306,
-
   // Your username
   user: "root",
-
   // Your password
   password: "root",
   database: "bamazon"
@@ -54,25 +54,25 @@ function startApp(){
         break;
       }
     });
-
-
 }
 
 
 function list(){
-    console.log('You chose to list all items');
     var query = "SELECT * FROM products";
     connection.query(query, function(err, res) {
+    var data, output ;
 
+    data = [
+      ["Item ID", "Product name", "Department name", "Price", "In stock"]
+    ]
         for (var i=0; i<res.length; i++){
-            console.log(res[i].product_name);
+          data.push([res[i].item_id, res[i].product_name, res[i].department_name, res[i].price, res[i].stock_quantity])
+          output = table(data);
         }
+        console.log(output);
         startApp();
         }
-
     )
-
-
 }
 
 function buy(){
@@ -85,25 +85,38 @@ function buy(){
         },
         { name: "qty",
           type: "input",
-          message: "How many products will you buy? : "
+          message: "How many items will you buy? : "
         }
   ])
     .then(function(answer) {
-      console.log(answer.id);
-      console.log(answer.qty);
-      var query = "SELECT * FROM products";
-      connection.query(query, function(err, res) {
-      console.log(res[answer.id-1].product_name);
-      startApp();
+      connection.query("SELECT * FROM products", function(err, res) {
+      inStock = parseInt(res[answer.id-1].stock_quantity);
+      quantity = inStock - parseInt(answer.qty) ;
+      item = parseInt(answer.id);
+
+      if (quantity>0){
+        connection.query("UPDATE products SET stock_quantity=? WHERE item_id=?", [quantity, item], function(err, res) {
+          if (err) throw err;
+          console.log("Thank you for tour purchase!");
+
+            connection.query("SELECT * FROM products", function(err,res) {
+              console.log('We hope you enjoy your brand new ' + res[answer.id-1].product_name + '! ');
+              console.log('Your total is: $' + res[answer.id-1].price);
+              
+              console.log('---------------------------------------------');
+              console.log("We still have " + res[answer.id-1].stock_quantity + " in stock!");
+              startApp();
+            });
+        });
+      } else {
+        console.log("Not enough items in stock");
+        startApp();
+      }
       });
     });
-
-
 }
 
 function exit(){
-
     console.log('Come back any time!');
     connection.end();
-
-}
+  }
