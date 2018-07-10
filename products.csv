@@ -1,0 +1,12 @@
+item_id,product_name,department_name,price,stock_quantity
+1,"DELL Laptop E5440",Electronics,599.99,25
+2,"DELL Inspiron E6440",Electronics,799.99,20
+3,"LOGITECH Mouse",Electronics,19.99,50
+4,"LOGITECH KeyBoard",Electronics,59.99,30
+5,"God Of War",VideoGames,59.99,4
+6,"UNCHARTED 4",VideoGames,29.99,27
+7,"The Evil Within",VideoGames,59.99,19
+8,"12 Rules for Life",Books,39.99,73
+9,"Wilson Basketball",Sports,49.99,3
+10,"LG Microwave",Home,69.99,8
+11,"Nintendo 3DS XL",VideoGames,299.99,20

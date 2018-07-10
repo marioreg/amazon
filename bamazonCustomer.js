@@ -24,7 +24,7 @@ connection.connect(function(err) {
 });
 
 function startApp(){
-
+  console.log('---------------------------------------------');
     inquirer
     .prompt({
       name: "action",
@@ -64,9 +64,9 @@ function list(){
 
     data = [
       ["Item ID", "Product name", "Department name", "Price", "In stock"]
-    ]
+    ];
         for (var i=0; i<res.length; i++){
-          data.push([res[i].item_id, res[i].product_name, res[i].department_name, res[i].price, res[i].stock_quantity])
+          data.push([res[i].item_id, res[i].product_name, res[i].department_name, res[i].price, res[i].stock_quantity]);
           output = table(data);
         }
         console.log(output);
@@ -101,9 +101,9 @@ function buy(){
 
             connection.query("SELECT * FROM products", function(err,res) {
               console.log('We hope you enjoy your brand new ' + res[answer.id-1].product_name + '! ');
-              console.log('Your total is: $' + res[answer.id-1].price);
-              
               console.log('---------------------------------------------');
+              console.log('Your total is: $' + (parseFloat(res[answer.id-1].price) )* parseFloat(item));
+
               console.log("We still have " + res[answer.id-1].stock_quantity + " in stock!");
               startApp();
             });
